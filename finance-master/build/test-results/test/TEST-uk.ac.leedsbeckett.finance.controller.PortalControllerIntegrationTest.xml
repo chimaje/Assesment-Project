@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="uk.ac.leedsbeckett.finance.controller.PortalControllerIntegrationTest" tests="8" skipped="0" failures="0" errors="0" timestamp="2025-03-18T14:06:29" hostname="CAMJNEW" time="1.288">
+  <properties/>
+  <testcase name="givenInvoiceWithNonExistingReference_whenPostPayInvoice_thenStatus404()" classname="uk.ac.leedsbeckett.finance.controller.PortalControllerIntegrationTest" time="0.08"/>
+  <testcase name="whenGetPortal_thenStatus200()" classname="uk.ac.leedsbeckett.finance.controller.PortalControllerIntegrationTest" time="0.79"/>
+  <testcase name="givenInvoice_whenPostFindInvoice_thenStatus200()" classname="uk.ac.leedsbeckett.finance.controller.PortalControllerIntegrationTest" time="0.292"/>
+  <testcase name="whenGetPortalInvoice_thenStatus200()" classname="uk.ac.leedsbeckett.finance.controller.PortalControllerIntegrationTest" time="0.025"/>
+  <testcase name="whenGetRoot_thenRedirectToPortal_AndStatus302()" classname="uk.ac.leedsbeckett.finance.controller.PortalControllerIntegrationTest" time="0.026"/>
+  <testcase name="givenInvoiceWithNullReference_whenPostPayInvoice_thenStatus404()" classname="uk.ac.leedsbeckett.finance.controller.PortalControllerIntegrationTest" time="0.021"/>
+  <testcase name="givenNoInvoice_whenPostFindInvoice_thenStatus404()" classname="uk.ac.leedsbeckett.finance.controller.PortalControllerIntegrationTest" time="0.021"/>
+  <testcase name="givenInvoice_whenPostPayInvoice_thenStatus200_andInvoicePaid()" classname="uk.ac.leedsbeckett.finance.controller.PortalControllerIntegrationTest" time="0.024"/>
+  <system-out><![CDATA[2025-03-18 14:06:25.577  INFO 27904 --- [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Neither @ContextConfiguration nor @ContextHierarchy found for test class [uk.ac.leedsbeckett.finance.controller.PortalControllerIntegrationTest], using SpringBootContextLoader
+2025-03-18 14:06:25.580  INFO 27904 --- [    Test worker] o.s.t.c.support.AbstractContextLoader    : Could not detect default resource locations for test class [uk.ac.leedsbeckett.finance.controller.PortalControllerIntegrationTest]: no resource found for suffixes {-context.xml, Context.groovy}.
+2025-03-18 14:06:25.581  INFO 27904 --- [    Test worker] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [uk.ac.leedsbeckett.finance.controller.PortalControllerIntegrationTest]: PortalControllerIntegrationTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2025-03-18 14:06:25.590  INFO 27904 --- [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration uk.ac.leedsbeckett.finance.FinanceApplication for test class uk.ac.leedsbeckett.finance.controller.PortalControllerIntegrationTest
+2025-03-18 14:06:25.600  INFO 27904 --- [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Loaded default TestExecutionListener class names from location [META-INF/spring.factories]: [org.springframework.boot.test.autoconfigure.restdocs.RestDocsTestExecutionListener, org.springframework.boot.test.autoconfigure.web.client.MockRestServiceServerResetTestExecutionListener, org.springframework.boot.test.autoconfigure.web.servlet.MockMvcPrintOnlyOnFailureTestExecutionListener, org.springframework.boot.test.autoconfigure.web.servlet.WebDriverTestExecutionListener, org.springframework.boot.test.autoconfigure.webservices.client.MockWebServiceServerTestExecutionListener, org.springframework.boot.test.mock.mockito.MockitoTestExecutionListener, org.springframework.boot.test.mock.mockito.ResetMocksTestExecutionListener, org.springframework.test.context.web.ServletTestExecutionListener, org.springframework.test.context.support.DirtiesContextBeforeModesTestExecutionListener, org.springframework.test.context.event.ApplicationEventsTestExecutionListener, org.springframework.test.context.support.DependencyInjectionTestExecutionListener, org.springframework.test.context.support.DirtiesContextTestExecutionListener, org.springframework.test.context.transaction.TransactionalTestExecutionListener, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener, org.springframework.test.context.event.EventPublishingTestExecutionListener]
+2025-03-18 14:06:25.602  INFO 27904 --- [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Using TestExecutionListeners: [org.springframework.test.context.web.ServletTestExecutionListener@2291fb1, org.springframework.test.context.support.DirtiesContextBeforeModesTestExecutionListener@213f2d00, org.springframework.test.context.event.ApplicationEventsTestExecutionListener@2aaf7354, org.springframework.boot.test.mock.mockito.MockitoTestExecutionListener@1606ecbb, org.springframework.boot.test.autoconfigure.SpringBootDependencyInjectionTestExecutionListener@5c18ad5d, org.springframework.test.context.support.DirtiesContextTestExecutionListener@497ccf3, org.springframework.test.context.transaction.TransactionalTestExecutionListener@55732ae6, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener@743167c7, org.springframework.test.context.event.EventPublishingTestExecutionListener@6d5a4e59, org.springframework.boot.test.autoconfigure.restdocs.RestDocsTestExecutionListener@5710f755, org.springframework.boot.test.autoconfigure.web.client.MockRestServiceServerResetTestExecutionListener@1b78c34b, org.springframework.boot.test.autoconfigure.web.servlet.MockMvcPrintOnlyOnFailureTestExecutionListener@640890bc, org.springframework.boot.test.autoconfigure.web.servlet.WebDriverTestExecutionListener@5b1f32e2, org.springframework.boot.test.autoconfigure.webservices.client.MockWebServiceServerTestExecutionListener@b65cc8b, org.springframework.boot.test.mock.mockito.ResetMocksTestExecutionListener@56da2437]
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+ :: Spring Boot ::                (v2.6.1)
+
+2025-03-18 14:06:25.678  INFO 27904 --- [    Test worker] .a.l.f.c.PortalControllerIntegrationTest : Starting PortalControllerIntegrationTest using Java 17.0.14 on CamjNew with PID 27904 (started by athen in C:\Users\athen\Documents\Labs\SESC\Assesment Project\finance-master)
+2025-03-18 14:06:25.678  INFO 27904 --- [    Test worker] .a.l.f.c.PortalControllerIntegrationTest : The following profiles are active: test
+2025-03-18 14:06:26.302  INFO 27904 --- [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-03-18 14:06:26.336  INFO 27904 --- [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 33 ms. Found 2 JPA repository interfaces.
+2025-03-18 14:06:26.399  INFO 27904 --- [    Test worker] beddedDataSourceBeanFactoryPostProcessor : Replacing 'dataSource' DataSource bean with embedded version
+2025-03-18 14:06:26.621  INFO 27904 --- [    Test worker] o.s.j.d.e.EmbeddedDatabaseFactory        : Starting embedded database: url='jdbc:h2:mem:0d268ea4-9994-46a8-ac6c-a831ce059f6d;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=false', username='sa'
+2025-03-18 14:06:26.798  INFO 27904 --- [    Test worker] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-03-18 14:06:26.818  INFO 27904 --- [    Test worker] org.hibernate.dialect.Dialect            : HHH000400: Using dialect: org.hibernate.dialect.H2Dialect
+2025-03-18 14:06:26.968  INFO 27904 --- [    Test worker] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2025-03-18 14:06:26.968  INFO 27904 --- [    Test worker] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-03-18 14:06:27.800  WARN 27904 --- [    Test worker] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-03-18 14:06:29.236  INFO 27904 --- [    Test worker] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2025-03-18 14:06:29.236  INFO 27904 --- [    Test worker] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2025-03-18 14:06:29.242  INFO 27904 --- [    Test worker] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 5 ms
+2025-03-18 14:06:29.264  INFO 27904 --- [    Test worker] .a.l.f.c.PortalControllerIntegrationTest : Started PortalControllerIntegrationTest in 3.657 seconds (JVM running for 26.817)
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
