@@ -74,4 +74,9 @@ public class StudentController{
 //        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
+    @DeleteMapping("/delete")
+    public ResponseEntity<Void> deleteAllStudents() {
+        studentService.deleteAllStudents();
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+    }
 }

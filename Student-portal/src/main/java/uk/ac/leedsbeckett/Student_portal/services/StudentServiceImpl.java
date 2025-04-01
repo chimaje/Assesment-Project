@@ -40,6 +40,10 @@ public class StudentServiceImpl implements StudentService {
         }
         repository.deleteById(Long.valueOf(studentId));
     }
+    @Override
+    public void deleteAllStudents() {
+        repository.deleteAll();
+    }
 
     @Override
     public Student updateStudentByExternalStudentId(String studentId, Student updatedStudent) {

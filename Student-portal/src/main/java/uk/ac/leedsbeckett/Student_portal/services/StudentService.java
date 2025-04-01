@@ -10,6 +10,7 @@ public interface StudentService {
     List<Student> getAllStudents();
     Student updateStudentByExternalStudentId(String externalStudentId, Student updatedStudent);
     void deleteStudentByExternalStudentId(String externalStudentId);
+    void deleteAllStudents();
 }
 
 

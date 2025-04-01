@@ -66,7 +66,8 @@ def register():
     db.execute('INSERT INTO student(id, hash) VALUES (%s, %s)',
                student_id, generate_password_hash(constants.DEFAULT_PIN))
     System.out.println("Received JSON: " + payload)
-    return ResponseEntity.ok("Invoice Created") {'studentId': student_id}
+    response = ResponseEntity.ok({"message": "Invoice Created", "studentId": student_id})
+    return response
 
 
 @app.route('/login', methods=['GET', 'POST'])

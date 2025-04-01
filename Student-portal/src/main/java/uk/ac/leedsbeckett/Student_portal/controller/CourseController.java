@@ -11,8 +11,9 @@ import uk.ac.leedsbeckett.Student_portal.services.CourseService;
 
 import java.util.List;
 
-@SpringBootApplication
+
 @RestController
+@CrossOrigin(origins = "http://localhost:5173")
 @RequestMapping(value="/courses", method = {RequestMethod.GET, RequestMethod.PUT,RequestMethod.POST,RequestMethod.DELETE})
 public class CourseController {
     private final CourseService courseService;
