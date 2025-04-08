@@ -1,5 +1,6 @@
 package uk.ac.leedsbeckett.Student_portal.services;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import uk.ac.leedsbeckett.Student_portal.exception.UserNotFoundException;
 import uk.ac.leedsbeckett.Student_portal.model.User;
@@ -8,6 +9,7 @@ import uk.ac.leedsbeckett.Student_portal.repositories.UserRepository;
 import java.util.List;
 
 
+@Slf4j
 @Service
 public class UserServiceImpl implements UserService {
     private final UserRepository repository;
@@ -23,8 +25,13 @@ public class UserServiceImpl implements UserService {
     }
     @Override
     public User authenticate(String username, String password) {
+        log.info("Authentication attempt - Username: {}, Password: {}", username, password);
         return repository.findByUsernameAndPassword(username, password)
-                .orElseThrow(() -> new RuntimeException("Invalid credentials"));
+                .orElseThrow(() -> new RuntimeException(
+                        String.format("Invalid credentials for username: %s and password: %s", username, password)
+                ));
+//        return repository.findByUsernameAndPassword(username, password)
+//                .orElseThrow(() -> new RuntimeException("Invalid credentials"));
     }
     @Override
     public User getUserById(long userId) {

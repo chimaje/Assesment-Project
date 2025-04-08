@@ -5,7 +5,7 @@ import requests
 from datetime import timedelta
 
 from cs50 import SQL
-from flask import Flask, flash, request
+from flask import Flask, flash, request, jsonify, current_app
 from flask_session import Session
 from tempfile import mkdtemp
 
@@ -58,16 +58,35 @@ except Exception as e:
 @app.route('/api/register', methods=['POST'])
 def register():
     """Register a new student"""
-    student_id = request.json['studentId']
-    # check student_id is not already registered
-    if db.execute('SELECT * FROM student WHERE id = %s', student_id):
-        return {'studentId': student_id}
+    try:
+        # Get JSON data properly
+        data = request.get_json()
+        if not data:
+            return jsonify({"error": "No JSON payload received"}), 400
 
-    db.execute('INSERT INTO student(id, hash) VALUES (%s, %s)',
-               student_id, generate_password_hash(constants.DEFAULT_PIN))
-    System.out.println("Received JSON: " + payload)
-    response = ResponseEntity.ok({"message": "Invoice Created", "studentId": student_id})
-    return response
+        student_id = data.get('studentId')
+        if not student_id:
+            return jsonify({"error": "Missing studentId"}), 400
+
+        # Check for existing student
+        existing = db.execute('SELECT * FROM student WHERE id = %s', student_id)
+        if existing:
+            return jsonify({"error": "Student ID already exists"}), 409
+
+        # Insert new student with default PIN
+        db.execute('''INSERT INTO student(id, hash) 
+                      VALUES (%s, %s)''',
+                   student_id,
+                   generate_password_hash(constants.DEFAULT_PIN))
+
+        return jsonify({
+            "message": "Registration successful",
+            "studentId": student_id
+        }), 201
+
+    except Exception as e:
+        current_app.logger.error(f"Registration error: {str(e)}")
+        return jsonify({"error": "Registration failed"}), 500
 
 
 @app.route('/login', methods=['GET', 'POST'])

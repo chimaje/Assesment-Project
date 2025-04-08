@@ -47,10 +47,10 @@ public class Student {
     @ToString.Exclude  // Serialize this side
     private Set<Course> courseEnrolledIn = new HashSet<>();
     
-    @JsonManagedReference
-    public Set<Course> getCourse(){
-        return courseEnrolledIn;
-    }
+//    @JsonManagedReference
+//    public Set<Course> getCourse(){
+//        return courseEnrolledIn;
+//    }
 
     @PrePersist
     private void generateExternalId() {

@@ -1,5 +1,6 @@
+/* eslint-disable no-unused-vars */
 import React , {useState , useEffect} from  "react";
-import { courseService } from '../../services/api.js';
+import { userService,courseService } from '../../services/api.js';
 
 export function AllCourses(){
     const [courses, setCourses] = useState([]);
@@ -10,7 +11,7 @@ export function AllCourses(){
         const loadCourses = async () => {
             try {
                 const data = await courseService.getAllCourses();
-                console.log(data)
+                
                 setCourses(data);
             } catch (err) {
                 setError(err.message);
@@ -19,11 +20,25 @@ export function AllCourses(){
             }
         };
 
+
         loadCourses();
     }, []);
     const viewDetails = (courseId) => {
         console.log(`Viewing details for course ${courseId}`);
-        // Add navigation to course details
+        
+    };
+
+const handleEnroll = async (courseId) => {
+        try {
+            let username =  userService.getCurrentUser();
+            if (!username) {
+                throw new Error('You must be logged in to enroll');
+            }
+            await courseService.enrollInCourse(courseId, username);
+            alert('Enrollment successful!');
+        } catch (error) {
+            setError(error.message);
+        }
     };
 
     return(
@@ -50,7 +65,7 @@ export function AllCourses(){
                             <div className="mt-4 flex space-x-2">
                                 <button
                                     className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
-
+                                    onClick={() => handleEnroll(course.id)}
                                 >
                                     Enroll
                                 </button>

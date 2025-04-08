@@ -12,7 +12,7 @@ export function NavBar(){
                         <a>Books Borrowed</a>
                     </div>
                     <div>
-                        <a>My Courses</a>
+                        <a href='/courses/my_courses'>My Courses</a>
                     </div>
                     <div>
                         <a>Invoices</a>

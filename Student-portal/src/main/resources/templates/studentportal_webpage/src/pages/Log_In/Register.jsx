@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import {userService} from '../../services/api.js'
+import { redirect , useNavigate } from 'react-router-dom';
 
 export function UserRegistration (){
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     username: '',
     email: '',
@@ -40,8 +42,11 @@ export function UserRegistration (){
               forename: '',
               password: ''
             });
+        //  navigate('/log_in', { state: { registrationSuccess: true } })
+        navigate("/log_in", { state: { registrationSuccess: true } })
     } catch (error) {
       setError(error.response?.data?.message || 'Registration failed');
+
     }
   };
 

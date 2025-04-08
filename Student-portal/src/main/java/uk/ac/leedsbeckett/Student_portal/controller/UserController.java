@@ -6,8 +6,10 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
+import uk.ac.leedsbeckett.Student_portal.model.Course;
 import uk.ac.leedsbeckett.Student_portal.model.Student;
 import uk.ac.leedsbeckett.Student_portal.model.User;
+import uk.ac.leedsbeckett.Student_portal.services.CourseService;
 import uk.ac.leedsbeckett.Student_portal.services.UserService;
 import uk.ac.leedsbeckett.Student_portal.repositories.UserRepository;
 
@@ -19,9 +21,11 @@ import java.util.List;
 @CrossOrigin(origins = "http://localhost:5173")
 public class UserController {
     private final UserService userService ;
+    private final CourseService courseService;
 
-    public UserController( UserService userService){
+    public UserController( UserService userService , CourseService courseService){
         this.userService = userService;
+        this.courseService = courseService;
     }
     private final RestTemplate restTemplate = new RestTemplate();
 
@@ -35,6 +39,11 @@ public class UserController {
         User user = userService.getUserById(userId);
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
+    @GetMapping("/{username}/my_courses")
+    public ResponseEntity<List<Course>> getEnrolledCourses(@PathVariable String username){
+        List<Course> courses = courseService.getEnrolledCourses(username);
+        return ResponseEntity.ok(courses);
+    }
     @PostMapping(value="/create",consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<User> createUser(@RequestBody User user){
         User createUser = userService.createUser(user);
@@ -43,6 +52,7 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<User> loginUser(@RequestBody User loginRequest) {
         User user = userService.authenticate(loginRequest.getUsername(), loginRequest.getPassword());
+        System.out.print(user);
         return ResponseEntity.ok(user);
     }
     @DeleteMapping("/delete")

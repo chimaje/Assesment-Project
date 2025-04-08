@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 const STUDENT_URL = 'http://localhost:8083/students'
 const COURSE_URL ='http://localhost:8083/courses'
 const FINANCE_INVOICE_URL = 'http://localhost:8081/api/invoices';
@@ -7,6 +8,7 @@ const USER_URL = 'http://localhost:8083/users';
 
 import axios from "axios";
 
+let currentUser = null;
 // Create axios instance with base config
 const Courseapi = axios.create({
     baseURL: COURSE_URL,
@@ -37,14 +39,27 @@ export const courseService = {
         }
     },
      //Enroll in course
-         enrollInCourse: async (courseId, userId) => {
+         enrollInCourse: async (courseId,username) => {
+         console.log("request pending to be sents")
              try {
-                 const response = await apiClient.post(`/courses/${userId}/${courseId}/enroll`);
+             console.log("request pending to be sents")
+             if (!username ) throw new Error('User not logged in')
+                 const response = await Courseapi.post(`/${username}/${courseId}/enroll`);
+                 console.log(response);
                  return response.data;
              } catch (error) {
                  throw new Error(`Enrollment failed: ${error.message}`);
              }
          },
+    // View Users Enrolled Courses
+    getEnrolledCourses: async (username)=>{
+        try{
+            const response = await Userapi.get(`/${username}/my_courses`)
+            return response.data;
+        }catch(error){
+            throw new Error(`Failed to fetch enrolled courses : ${error.message}`)
+        }
+    }
 }
 export const userService = {
     // Register new user
@@ -69,39 +84,27 @@ export const userService = {
     login: async (loginData) =>{
         try{
             const response = await Userapi.post('/login',{
-                Username:loginData.username,
+                username:loginData.username,
                 password:loginData.password
             });
+              localStorage.setItem('currentUser', loginData.username);
+              currentUser = loginData.username;
+
             return response.data;
         }catch(error){
             throw new Error(`Log In failed : ${error.response?.data?.message || error.message}`)
         }
     },
+   getCurrentUser: () => {
+            const currentUser = localStorage.getItem('currentUser');
+
+           return currentUser;
+       },
+
+   logout: () => {
+           localStorage.removeItem('currentUser');
+           currentUser = null;
+       }
 
 };
 
-//     // Get single course
-//     getCourseById: async (courseId) => {
-//         try {
-//             const response = await apiClient.get(`/courses/${courseId}`);
-//             return response.data;
-//         } catch (error) {
-//             throw new Error(`Failed to fetch course: ${error.message}`);
-//         }
-//     },
-//
-//     // Enroll in course
-//     enrollInCourse: async (courseId, studentId) => {
-//         try {
-//             const response = await apiClient.post(`/courses/${courseId}/enroll/${studentId}`);
-//             return response.data;
-//         } catch (error) {
-//             throw new Error(`Enrollment failed: ${error.message}`);
-//         }
-//     }
-// };
-//
-// // Add other API services as needed
-// export const invoiceService = {
-//     // Invoice-related endpoints
-// };

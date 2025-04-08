@@ -6,6 +6,7 @@ import {Portal} from "./pages/Portal.jsx";
 import {AllCourses} from "./pages/Courses/View_Course.jsx";
 import {UserRegistration} from "./pages/Log_In/Register.jsx";
 import {Login} from "./pages/Log_In/Login.jsx";
+import { My_Courses } from './pages/Courses/User_Courses.jsx';
 
 function App() {
     const router = createBrowserRouter([
@@ -17,13 +18,9 @@ function App() {
             children: [
                 { path:'/', element:<Portal/>  },
 
-                {
-                    path:'/courses',
-                    element:<AllCourses/>,
-                    children:[
+                {path:'/courses',element:<AllCourses/>},
 
-                    ]
-                }
+                {path:'/courses/my_courses',element:<My_Courses/>}
             ],
         },
 

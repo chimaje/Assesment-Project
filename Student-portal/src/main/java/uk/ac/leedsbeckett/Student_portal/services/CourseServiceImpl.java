@@ -15,6 +15,7 @@ import uk.ac.leedsbeckett.Student_portal.repositories.UserRepository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class CourseServiceImpl implements CourseService {
@@ -51,13 +52,14 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Transactional
-    public String enrollStudentInCourse(Long userId,Long courseId) {
+    public String enrollStudentInCourse(String username,Long courseId) {
 
 
         // 1. Find student and course
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException("User does not exist"));
-
+//        User user = userRepository.findById(userId)
+//                .orElseThrow(() -> new UserNotFoundException("User does not exist"));
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException("User does not exist"));
+        System.out.print(user);
         // Create student if not exists
         Student student = user.getStudent();
         if (student == null) {
@@ -65,6 +67,7 @@ public class CourseServiceImpl implements CourseService {
             student.setUser(user);
             user.setStudent(student);
             student = studentRepository.save(student);
+            integrationService.registerStudent(student);
         }
         Course course = repository.findById(courseId)
                 .orElseThrow(() -> new CourseNotFoundException(courseId));
@@ -74,12 +77,21 @@ public class CourseServiceImpl implements CourseService {
         studentRepository.save(student);
 
 //        // 3. Call Finance Service
-//        String invoiceRef = integrationService.createInvoice(
-//                student.getExternalStudentId(),
-//                course.getFee()
-//        );
-//        return String.format("Successfully enrolled in %s. Invoice Reference: %s",
-//                course.getTitle(), invoiceRef);
-       return "Enrolled.s" ;
+        String invoiceRef = integrationService.createInvoice(
+                student.getExternalStudentId(),
+                course.getFee()
+        );
+        return String.format("Successfully enrolled in %s. Invoice Reference: %s",
+                course.getTitle(), invoiceRef);
+//       return "Enrolled.s" ;
     }
+
+    @Override
+    public List<Course> getEnrolledCourses(String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(()-> new UserNotFoundException("User not found"));
+        return user.getStudent().getCourseEnrolledIn().stream()
+                .collect(Collectors.toList());
+    }
+
 }
