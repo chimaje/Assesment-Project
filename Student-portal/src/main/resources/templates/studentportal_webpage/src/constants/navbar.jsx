@@ -20,7 +20,7 @@ export function NavBar(){
                 </div>
                 <div className="flex flex-row mt-0 mb-[10px] mr-[10px] ml-[189px] gap-4">
                     <div>
-                        <a>Log Out</a>
+                        <a href='/log_in'>Log Out</a>
                     </div>
                     <div>
                         <a>Profile</a>

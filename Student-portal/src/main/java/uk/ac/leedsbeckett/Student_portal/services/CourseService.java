@@ -9,5 +9,5 @@ public interface CourseService {
     Course getCourseById(long courseId);
     List<Course> getAllCourses( );
     void deleteCourse(Course course);
-    String enrollStudentInCourse(String externalStudentId, Long courseId);
+    String enrollStudentInCourse(Long userId, Long courseId);
 }

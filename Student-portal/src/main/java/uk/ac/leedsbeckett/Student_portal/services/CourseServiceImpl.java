@@ -5,10 +5,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import uk.ac.leedsbeckett.Student_portal.exception.CourseNotFoundException;
 import uk.ac.leedsbeckett.Student_portal.exception.StudentNotFoundException;
+import uk.ac.leedsbeckett.Student_portal.exception.UserNotFoundException;
 import uk.ac.leedsbeckett.Student_portal.model.Course;
 import uk.ac.leedsbeckett.Student_portal.model.Student;
+import uk.ac.leedsbeckett.Student_portal.model.User;
 import uk.ac.leedsbeckett.Student_portal.repositories.CourseRepository;
 import uk.ac.leedsbeckett.Student_portal.repositories.StudentRepository;
+import uk.ac.leedsbeckett.Student_portal.repositories.UserRepository;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,11 +21,13 @@ public class CourseServiceImpl implements CourseService {
     private final CourseRepository repository;
     private final StudentRepository studentRepository;
     private final IntegrationService integrationService;
+    private final UserRepository userRepository;
 
-    public CourseServiceImpl(CourseRepository repository, StudentRepository studentRepository, IntegrationService integrationService) {
+    public CourseServiceImpl(CourseRepository repository, StudentRepository studentRepository, IntegrationService integrationService ,UserRepository userRepository) {
         this.repository = repository;
         this.studentRepository = studentRepository;
         this.integrationService = integrationService;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -46,10 +51,21 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Transactional
-    public String enrollStudentInCourse(String externalStudentId, Long courseId) {
+    public String enrollStudentInCourse(Long userId,Long courseId) {
+
+
         // 1. Find student and course
-        Student student = studentRepository.findByExternalStudentId(externalStudentId)
-                .orElseThrow(() -> new StudentNotFoundException(externalStudentId));
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("User does not exist"));
+
+        // Create student if not exists
+        Student student = user.getStudent();
+        if (student == null) {
+            student = new Student();
+            student.setUser(user);
+            user.setStudent(student);
+            student = studentRepository.save(student);
+        }
         Course course = repository.findById(courseId)
                 .orElseThrow(() -> new CourseNotFoundException(courseId));
 
@@ -57,42 +73,13 @@ public class CourseServiceImpl implements CourseService {
         student.enrolInCourse(course);
         studentRepository.save(student);
 
-        // 3. Call Finance Service
-        String invoiceRef = integrationService.createInvoice(
-                student.getExternalStudentId(),
-                course.getFee()
-        );
-        return String.format("Successfully enrolled in %s. Invoice Reference: %s",
-                course.getTitle(), invoiceRef);
-//        return "Enrolled. Invoice Ref: " + invoiceRef;
+//        // 3. Call Finance Service
+//        String invoiceRef = integrationService.createInvoice(
+//                student.getExternalStudentId(),
+//                course.getFee()
+//        );
+//        return String.format("Successfully enrolled in %s. Invoice Reference: %s",
+//                course.getTitle(), invoiceRef);
+       return "Enrolled.s" ;
     }
-//    public String enrollStudentInCourse(String externalStudentId, Long courseId) {
-//        Optional<Student> studentOpt = studentRepository.findByExternalStudentId(externalStudentId);
-//        Optional<Course> courseOpt = repository.findById(courseId);
-//
-//        if (studentOpt.isPresent() && courseOpt.isPresent()) {
-//            Student student = studentOpt.get();
-//            Course course = courseOpt.get();
-//
-//            if (student.hasEnrolledInCourse(course)) {
-//                return "Student is already enrolled in this course.";
-//            }
-//
-//            student.enrolInCourse(course);
-//            studentRepository.save(student);
-//
-//            // Call finance service to generate an invoice
-////            integrationService.createInvoice(student.getExternalStudentId(), course.getFee());
-////            String referenceNumber = integrationService.createInvoice(student.getExternalStudentId(), course.getFee());
-//                String referenceNumber = integrationService.createInvoice(
-//                        student.getExternalStudentId(),
-//                        course.getFee()
-//                );
-////            return "Enrollment successful, and invoice created.";
-//            return "Enrollment successful! Invoice reference number: " + referenceNumber;
-//        }
-//
-//        return "Student or Course not found.";
-//    }
 }
-

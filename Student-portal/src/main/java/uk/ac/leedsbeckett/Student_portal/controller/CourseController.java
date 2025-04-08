@@ -33,11 +33,11 @@ public class CourseController {
         return new ResponseEntity<>(createdCourse, HttpStatus.CREATED);
     }
 
-    @PostMapping("/{courseId}/enroll/{externalStudentId}")
+    @PostMapping("/{userId}/{courseId}/enroll")
     public ResponseEntity<String> enrollStudent(
-            @PathVariable String externalStudentId,
+            @PathVariable Long userId,
             @PathVariable Long courseId) {
-        String response = courseService.enrollStudentInCourse(externalStudentId, courseId);
+        String response = courseService.enrollStudentInCourse( userId,courseId);
         return ResponseEntity.ok(response);
     }
 }

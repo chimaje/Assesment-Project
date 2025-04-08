@@ -1,8 +1,12 @@
 package uk.ac.leedsbeckett.Student_portal.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 
 import java.util.HashSet;
@@ -21,9 +25,15 @@ public class Course {
     private double fee;
 
     // Map the relationship using 'mappedBy' in Course to ensure consistency.
-    @JsonIgnore
     @ManyToMany(mappedBy = "courseEnrolledIn", fetch = FetchType.LAZY)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private Set<Student> students = new HashSet<>();
+
+    @JsonBackReference
+    public Set<Student> getStudents(){
+        return students;
+    }
 
     // No-arg constructor required by JPA (public or protected)
     public Course() {
