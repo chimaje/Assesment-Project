@@ -43,6 +43,10 @@ public class UserServiceImpl implements UserService {
     public List<User> getallUsers() {
         return repository.findAll();
     }
+    @Override
+    public User getUserByUsername(String username){
+        return repository.findByUsername(username).orElseThrow(()-> new UserNotFoundException("User not found" + username));
+    }
 
     @Override
     public User updateUserId(long userId, User updatedUser) {

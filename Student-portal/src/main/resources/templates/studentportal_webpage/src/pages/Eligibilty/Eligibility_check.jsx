@@ -49,7 +49,7 @@ export function EligibilityCheck() {
 
               <div className="mt-8 text-center">
                 <a
-                  href="/profile"
+                  href="/home/profile"
                   className="inline-block bg-blue-600 hover:bg-blue-700 text-white 
                          font-medium py-3 px-8 rounded-lg transition-all duration-200"
                 >
@@ -70,7 +70,7 @@ export function EligibilityCheck() {
               <p className="text-gray-600">Congratulations! You've met all graduation requirements.</p>
               <div className="mt-8 text-center">
                 <a
-                  href="/profile"
+                  href="/home/profile"
                   className="inline-block bg-blue-600 hover:bg-blue-700 text-white 
                          font-medium py-3 px-8 rounded-lg transition-all duration-200"
                 >

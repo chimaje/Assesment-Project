@@ -57,8 +57,9 @@ export const financeService = {
 
 export const studentService = {
     //get student info 
-    getStudentByUser: async (username) => {
+    getStudentByUser: async () => {
         try {
+            const username = userService.getCurrentUser();
             const response = await Studentapi.get(`/user/${username}`);
             return response.data;
         } catch (error) {

@@ -3,9 +3,11 @@ package uk.ac.leedsbeckett.Student_portal.services;
 import org.springframework.stereotype.Service;
 import uk.ac.leedsbeckett.Student_portal.model.Student;
 import uk.ac.leedsbeckett.Student_portal.exception.StudentNotFoundException;
+import uk.ac.leedsbeckett.Student_portal.model.User;
 import uk.ac.leedsbeckett.Student_portal.repositories.StudentRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class StudentServiceImpl implements StudentService {
@@ -47,16 +49,18 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public Student updateStudentByExternalStudentId(String studentId, Student updatedStudent) {
-        if (!repository.existsById(Long.valueOf(studentId))) {
-            throw new StudentNotFoundException("Student not found with ID: " + studentId);
-        }
-//        //Add additional validation logic if required
-//        updatedStudent.setStudentId(studentId);
-        return repository.save(updatedStudent);
+        Student existingStudent = repository.findByExternalStudentId(studentId)
+                .orElseThrow(() -> new StudentNotFoundException("Student not found with ID: " + studentId));
+        existingStudent.setSurname(updatedStudent.getSurname());
+        existingStudent.setForename(updatedStudent.getForename());
+        return repository.save(existingStudent);
     }
 
     public List<Student> getAllStudents() {
 
         return repository.findAll();
+    }
+    public Optional<Student> getStudentByUser(User user){
+        return repository.findByUser(user);
     }
 }
