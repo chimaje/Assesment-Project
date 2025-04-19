@@ -21,10 +21,14 @@ from constants import constants, messages
 from errors.errors import IncompleteBookError, NotValidISBNError
 
 from helpers import *
-
+from flask_cors import CORS
 
 app = Flask(__name__)
-
+CORS(app,
+     resources={r"/*": {"origins": "http://localhost:5173"}},
+     supports_credentials=True,
+     expose_headers=['Content-Type', 'X-CSRFToken']
+     )
 # Ensure templates are auto-reloaded
 app.config['TEMPLATES_AUTO_RELOAD'] = True
 
@@ -38,12 +42,21 @@ def after_request(response):
     response.headers['Pragma'] = 'no-cache'
     return response
 
+app.config.update(
+    SESSION_COOKIE_SECURE=False,  # True in production
+    SESSION_COOKIE_HTTPONLY=True,
+    SESSION_COOKIE_SAMESITE='None',  # Required for cross-origin
+    SESSION_COOKIE_NAME='library_session',
+    SESSION_COOKIE_PATH='/',
+    SESSION_COOKIE_DOMAIN=None
+)
 
 # Configure session to use filesystem (instead of signed cookies)
 app.config['SESSION_FILE_DIR'] = mkdtemp()
 app.config['SESSION_PERMANENT'] = False
 app.config['SESSION_TYPE'] = 'filesystem'
 Session(app)
+
 
 # Configure CS50 Library to use SQL database
 # db = SQL("mysql://redyelruc:financered180974finance@127.0.0.1:3309/finance")

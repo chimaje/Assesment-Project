@@ -5,6 +5,8 @@ ENV VIRTUAL_ENV=/opt/venv
 RUN python3 -m venv $VIRTUAL_ENV
 ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 
+RUN /opt/venv/bin/python3 -m pip install --upgrade pip
+
 # Install apt dependencies
 RUN apt-get update -y
 RUN apt-get install python3-dev default-libmysqlclient-dev gcc  -y
@@ -14,6 +16,7 @@ WORKDIR /usr/src/flask_uuid
 COPY . .
 
 # Install pip dependencies
+RUN pip install -U flask-cors
 RUN pip install -r requirements.txt
 
 # Run

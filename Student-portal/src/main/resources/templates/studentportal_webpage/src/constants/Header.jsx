@@ -1,13 +1,21 @@
+// Header.jsx
 import React from "react";
 import { NavBar } from "./NavBar.jsx";
 
 export function Header() {
     return (
-        <div className="flex flex-col md:flex-row items-center md:items-baseline justify-between w-full sticky top-0 py-2 bg-gray-200 px-4">
-            <p className="text-4xl font-bold text-black">
-                <a href="/">Student Portal</a>
-            </p>
-            <NavBar />
-        </div>
+        <header className="fixed top-0 w-full bg-white shadow-sm z-50 border-b border-gray-100">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 " >
+                <div className="flex items-center justify-between h-16">
+                    <a
+                        href="/home" 
+                        className="text-2xl font-bold !text-black hover:!text-blue-600 transition-colors"
+                    >
+                        Student Portal
+                    </a>
+                    <NavBar />
+                </div>
+            </div>
+        </header>
     );
 }

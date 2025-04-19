@@ -2,10 +2,17 @@
 const STUDENT_URL = 'http://localhost:8083/students'
 const COURSE_URL ='http://localhost:8083/courses'
 const FINANCE_INVOICE_URL = 'http://localhost:8081/api/invoices';
-const FINANCE_ACCOUNT_URL = 'http://localhost:8081/accounts';
-const LIBRARY_BASE_URL= ''
+// const FINANCE_ACCOUNT_URL = 'http://localhost:8081/accounts';
+const LIBRARY_BASE_URL= ' http://0.0.0.0:80';
 const USER_URL = 'http://localhost:8083/users';
 
+const handleError = (error, serviceName) => {
+    const errorMessage = error.response?.data?.message || 
+                        error.response?.data?.error || 
+                        error.message || 
+                        `Unknown error in ${serviceName}`;
+    throw new Error(errorMessage);
+};
 import axios from "axios";
 
 let currentUser = null;
@@ -23,6 +30,56 @@ const Userapi = axios.create({
         'Content-Type': 'application/json',
     }
 });
+const Libraryapi = axios.create({
+    baseURL: LIBRARY_BASE_URL,
+    headers: {
+        'Content-Type': 'application/json',
+    }
+});
+const Studentapi = axios.create({
+    baseURL : STUDENT_URL,
+    headers:{
+        'Content-Type': 'application/json',
+    }
+});
+const Financeapi = axios.create({
+    baseURL:FINANCE_INVOICE_URL,
+    headers:{
+       'Content-Type': 'application/json', 
+    }
+});
+
+export const financeService = {
+    getInvoices:async () => {
+
+    }
+}
+
+export const studentService = {
+    //get student info 
+    getStudentByUser: async (username) => {
+        try {
+            const response = await Studentapi.get(`/user/${username}`);
+            return response.data;
+        } catch (error) {
+            if (error.response?.status === 404) return null;
+            handleError(error, 'studentService');
+        }
+    },
+
+    //update student info
+    updateStudentInfo: async (externalStudentId, updateData) => {
+        try {
+            const response = await Studentapi.put(`/${externalStudentId}`, updateData);
+            return response.data;
+        } catch (error) {
+            handleError(error, 'studentService');
+        }
+    }
+
+};
+
+
 
 export const courseService = {
     // Get all courses
@@ -60,7 +117,7 @@ export const courseService = {
             throw new Error(`Failed to fetch enrolled courses : ${error.message}`)
         }
     }
-}
+};
 export const userService = {
     // Register new user
     registerUser: async (userData) => {

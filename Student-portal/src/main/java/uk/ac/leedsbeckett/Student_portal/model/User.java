@@ -43,7 +43,6 @@ public class User {
 
     }
     @OneToOne(mappedBy = "user")
-    @JsonBackReference("student-user")
     @ToString.Exclude
     private Student student;
 

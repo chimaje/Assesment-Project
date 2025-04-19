@@ -39,7 +39,7 @@ export function Login() {
       // Redirect to main page after successful login
       
       redirect("/");
-      navigate("/");
+      navigate("/home");
     } catch (error) {
       setError(error.message || 'Login failed. Please check your credentials.');
     } finally {

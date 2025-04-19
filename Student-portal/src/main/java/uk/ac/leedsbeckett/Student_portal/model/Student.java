@@ -33,7 +33,7 @@ public class Student {
             joinColumns ={ @JoinColumn(name = "user_id", referencedColumnName = "id") },
             inverseJoinColumns ={ @JoinColumn(name = "student_id", referencedColumnName = "id") }
     )
-
+    @JsonBackReference("student-user")
     private User user;
 
     // Bi-directional relationship: Many-to-many with courses
