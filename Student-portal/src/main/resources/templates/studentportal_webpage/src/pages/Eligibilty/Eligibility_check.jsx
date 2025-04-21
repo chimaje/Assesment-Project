@@ -1,7 +1,62 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from 'react-router-dom';
+import { financeService, userService ,studentService } from '../../services/api.js'; // Add financeService import
 
 export function EligibilityCheck() {
-  const [isEligible] = useState(true); // Simulate state
+  const [isEligible, setIsEligible] = useState(false);
+  const [outstandingInvoices, setOutstandingInvoices] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const checkEligibility = async () => {
+      try {
+        const currentUser = userService.getCurrentUser();
+        const studentData = await studentService.getStudentByUser(currentUser);
+        const studentId = studentData?.externalStudentId ;
+        if (!studentId) {
+          throw new Error('Student ID not found');
+        }
+
+        // Get invoices from finance service
+        const invoices = await financeService.getInvoices(studentId);
+        
+        // Check for outstanding invoices
+        const outstanding = invoices.filter(invoice => 
+          invoice.status === 'OUTSTANDING'
+        );
+        
+        setOutstandingInvoices(outstanding);
+        setIsEligible(outstanding.length === 0);
+      } catch (err) {
+        setError(err.message || 'Failed to check eligibility');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    checkEligibility();
+  }, []);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 pt-16 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-50 pt-16 flex items-center justify-center">
+        <div className="text-red-500 text-center">
+          <p className="text-xl mb-4">Error checking eligibility:</p>
+          <p className="text-lg">{error}</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 pt-16">
@@ -30,31 +85,33 @@ export function EligibilityCheck() {
                 <div className="space-y-4">
                   <p className="text-red-600 font-medium">Missing Requirements:</p>
                   <div className="space-y-3">
-                    <div className="flex items-center gap-3">
-                      <span className="text-red-500">✖</span>
-                      <span className="text-gray-600">All fees paid (2 outstanding invoices)</span>
-                      <a href="/invoices" className="ml-auto text-blue-600 hover:underline">View Invoices</a>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <span className="text-red-500">✖</span>
-                      <span className="text-gray-600">Completed 120 credits (current: 110)</span>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <span className="text-green-500">✔</span>
-                      <span className="text-gray-600">Minimum GPA of 2.0 (current: 3.4)</span>
-                    </div>
+                    {outstandingInvoices.length > 0 && (
+                      <div className="flex items-center gap-3">
+                        <span className="text-red-500">✖</span>
+                        <span className="text-gray-600">
+                          All fees paid ({outstandingInvoices.length} outstanding invoices)
+                        </span>
+                        <a 
+                          href="/home/invoices" 
+                          className="ml-auto text-blue-600 hover:underline"
+                        >
+                          View Invoices
+                        </a>
+                      </div>
+                    )}
+                    {/* Add other eligibility criteria here */}
                   </div>
                 </div>
               </div>
 
               <div className="mt-8 text-center">
-                <a
-                  href="/home/profile"
+                <button
+                  onClick={() => navigate(-1)}
                   className="inline-block bg-blue-600 hover:bg-blue-700 text-white 
                          font-medium py-3 px-8 rounded-lg transition-all duration-200"
                 >
                   Return to Portal
-                </a>
+                </button>
               </div>
             </div>
           ) : (
@@ -69,13 +126,13 @@ export function EligibilityCheck() {
               </div>
               <p className="text-gray-600">Congratulations! You've met all graduation requirements.</p>
               <div className="mt-8 text-center">
-                <a
-                  href="/home/profile"
+                <button
+                  onClick={() => navigate(-1)}
                   className="inline-block bg-blue-600 hover:bg-blue-700 text-white 
                          font-medium py-3 px-8 rounded-lg transition-all duration-200"
                 >
                   Return to Portal
-                </a>
+                </button>
               </div>
             </div>
           )}

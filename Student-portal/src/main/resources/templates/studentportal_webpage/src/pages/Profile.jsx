@@ -1,6 +1,7 @@
+/* eslint-disable no-unused-vars */
 import { useState , useEffect} from "react";
 import {  useNavigate} from 'react-router-dom';
-import { studentService, userService } from '../services/api.js';
+import { studentService, userService ,financeService} from '../services/api.js';
 
 
 export function Profile() {
@@ -11,7 +12,17 @@ export function Profile() {
   const [showEligibility, setShowEligibility] = useState(false);
   const [isEligible] = useState(true); // Simulate state
   const username = userService.getCurrentUser();
+  const [eligibilityStatus, setEligibilityStatus] = useState(null);
 
+  const checkEligibility = async () => {
+    try {
+      const invoices = await financeService.getInvoices(student.externalStudentId);
+      setEligibilityStatus(invoices.filter(i => i.status === 'OUTSTANDING').length === 0);
+      navigate("/home/eligibility_check");
+    } catch (error) {
+      console.error("Eligibility check failed:", error);
+    }
+  };
   useEffect(() => {
       const fetchStudent = async () => {
           try {
@@ -66,98 +77,6 @@ export function Profile() {
       <div className="min-h-screen bg-gray-50 pt-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {/* Student Profile Section */}
-            {/* <div className="bg-white rounded-2xl shadow-lg p-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">Student Profile</h2>
-              <div className="space-y-4">
-                <div className="flex items-center gap-4">
-                  <div className="bg-blue-100 p-3 rounded-full">
-                    <span className="text-xl">👤</span>
-                  </div>
-                  <div>
-                    <p className="font-medium text-gray-900">{username }</p>
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  <p className="text-gray-600"><span className="font-semibold">Student ID:</span>{studentid}</p>
-                </div>
-              </div>
-            </div> */}
-                    {/* Student Profile Section */}
-                    {/* <div className="bg-white rounded-2xl shadow-lg p-8 relative">
-                        <h2 className="text-2xl font-bold text-gray-900 mb-6">Student Profile</h2>
-                        <div className="space-y-4">
-                            <div className="flex items-center gap-4">
-                                <div className="bg-blue-100 p-3 rounded-full">
-                                    <span className="text-xl">👤</span>
-                                </div>
-                                <div>
-                                    <p className="font-medium text-gray-900">{username}</p>
-                                </div>
-                            </div>
-                            <div className="space-y-2">
-                                <p className="text-gray-600">
-                                    <span className="font-semibold">Student ID:</span> 
-                                    {student?.externalStudentId || 'Loading...'}
-                                </p>
-                                <div className="mt-4 space-y-3">
-                                    <div className="flex items-center gap-2">
-                                        <span className="font-semibold w-20">Surname:</span>
-                                        {isEditing ? (
-                                            <input
-                                                name="surname"
-                                                value={formData.surname}
-                                                onChange={handleInputChange}
-                                                className="border rounded p-1 flex-1"
-                                            />
-                                        ) : (
-                                            <span>{student?.surname}</span>
-                                        )}
-                                    </div>
-                                    <div className="flex items-center gap-2">
-                                        <span className="font-semibold w-20">Forename:</span>
-                                        {isEditing ? (
-                                            <input
-                                                name="forename"
-                                                value={formData.forename}
-                                                onChange={handleInputChange}
-                                                className="border rounded p-1 flex-1"
-                                            />
-                                        ) : (
-                                            <span>{student?.forename}</span>
-                                        )}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="mt-6 flex gap-2">
-                            {isEditing ? (
-                                <>
-                                    <button
-                                        onClick={handleSave}
-                                        className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
-                                    >
-                                        Save
-                                    </button>
-                                    <button
-                                        onClick={handleEditToggle}
-                                        className="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700"
-                                    >
-                                        Cancel
-                                    </button>
-                                </>
-                            ) : (
-                                <button
-                                    onClick={handleEditToggle}
-                                    className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-                                    disabled={!student}
-                                >
-                                    Edit Profile
-                                </button>
-                            )}
-                        </div>
-                    </div>
-   */}
 
              {/* Student Profile Section */}
              <div className="bg-white rounded-2xl shadow-lg p-8">
@@ -254,15 +173,15 @@ export function Profile() {
                   </div>
                 </div>
                 <button 
-                  onClick={() => {setShowEligibility(true), navigate("/home/eligibility_check");}}
-                  className="w-full md:w-auto bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-8 rounded-lg 
-                         transition-all duration-200 transform hover:scale-[1.02]"
+                onClick={checkEligibility}
+                className="w-full md:w-auto bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-8 rounded-lg 
+                        transition-all duration-200 transform hover:scale-[1.02]"
                 >
-                  Check Eligibility
+                Check Eligibility
                 </button>
               </div>
   
-              {showEligibility && (
+              {/* {showEligibility && (
                 <div className="mt-8 space-y-6">
                   {!isEligible && (
                     <div className="bg-red-50 p-6 rounded-lg border border-red-100">
@@ -295,7 +214,7 @@ export function Profile() {
                     </div>
                   )}
                 </div>
-              )}
+              )} */}
             </div>
           </div>
         </div>

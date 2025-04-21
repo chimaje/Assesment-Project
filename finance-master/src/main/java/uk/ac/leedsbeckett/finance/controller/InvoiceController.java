@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:5173")
 @RequestMapping(value ="/api/invoices",method = RequestMethod.POST,headers = "Accept=application/json")
 public class InvoiceController {
 
@@ -55,6 +56,11 @@ public class InvoiceController {
         return invoiceService.getInvoiceById(id);
     }
 
+    @GetMapping("/student/{studentId}")
+    public CollectionModel<EntityModel<Invoice>> getByStudentId(@PathVariable String studentId) {
+        return invoiceService.getInvoicesByStudentid(studentId);
+    }
+
     @GetMapping("/reference/{reference}")
     public EntityModel<Invoice> one(@PathVariable String reference) {
         return invoiceService.getInvoiceByReference(reference);
@@ -65,15 +71,6 @@ public class InvoiceController {
         return invoiceService.createNewInvoice(invoice);
     }
 
-//    @PostMapping("/course_fee")
-//    public ResponseEntity<?> createCourseFeeInvoice(@Valid @RequestBody CourseFeeRequest request) {
-//        Invoice invoice = invoiceService.createCourseFeeInvoice(
-//                request.getStudentId(),
-//                request.getAmount()
-//        );
-//
-//        return ResponseEntity.status(HttpStatus.CREATED).body(invoice);
-//    }
 
     @DeleteMapping("/{reference}/cancel")
     public ResponseEntity<?> cancel(@PathVariable String reference) {

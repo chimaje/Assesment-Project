@@ -6,7 +6,7 @@ export function Layout() {
     return (
         <div className="min-h-screen">
             <Header />
-            <div className="relative flex justify-start p-4">
+            <div className="relative flex justify-start p-4 mt-4">
                 <Outlet />
             </div>
         </div>

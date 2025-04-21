@@ -36,6 +36,7 @@ public class Invoice {
     private Account account;
 
     @JsonProperty
+    @Transient
     public String getStudentId() {
         return account.getStudentId();
     }

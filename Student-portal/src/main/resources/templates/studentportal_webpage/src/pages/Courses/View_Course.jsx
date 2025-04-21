@@ -42,7 +42,7 @@ const handleEnroll = async (courseId) => {
     };
 
     return(
-        <div>
+        <div className="mt-10">
             <div className="flex justify-start text-4xl text-black m-3">
                 <h2>All Courses</h2>
             </div>

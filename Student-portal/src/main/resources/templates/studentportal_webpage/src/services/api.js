@@ -3,7 +3,7 @@ const STUDENT_URL = 'http://localhost:8083/students'
 const COURSE_URL ='http://localhost:8083/courses'
 const FINANCE_INVOICE_URL = 'http://localhost:8081/api/invoices';
 // const FINANCE_ACCOUNT_URL = 'http://localhost:8081/accounts';
-const LIBRARY_BASE_URL= ' http://0.0.0.0:80';
+const LIBRARY_BASE_URL= 'http://localhost';
 const USER_URL = 'http://localhost:8083/users';
 
 const handleError = (error, serviceName) => {
@@ -50,9 +50,29 @@ const Financeapi = axios.create({
 });
 
 export const financeService = {
-    getInvoices:async () => {
-
-    }
+    getInvoices:async (studentId) => {
+        try {
+            const response = await Financeapi.get(`/student/${studentId}`);
+            return response.data._embedded.invoiceList;
+          } catch (error) {
+            throw new Error('Failed to fetch invoices');
+          }
+    },
+    payInvoice: async (reference) => {
+        try {
+          await Financeapi.put(`/${reference}/pay`);
+        } catch (error) {
+          throw new Error('Payment failed');
+        }
+      },
+    
+      cancelInvoice: async (reference) => {
+        try {
+          await Financeapi.delete(`/${reference}/cancel`);
+        } catch (error) {
+          throw new Error('Cancellation failed');
+        }
+      }
 }
 
 export const studentService = {
@@ -79,8 +99,6 @@ export const studentService = {
     }
 
 };
-
-
 
 export const courseService = {
     // Get all courses
@@ -154,6 +172,7 @@ export const userService = {
         }
     },
    getCurrentUser: () => {
+    
             const currentUser = localStorage.getItem('currentUser');
 
            return currentUser;
@@ -165,4 +184,22 @@ export const userService = {
        }
 
 };
+
+export const LibraryService = {
+    getBorrowedBooks: async () => {
+        try {
+          const response = await Libraryapi.get('/api/borrowedbooks');
+          return response.data;
+        } catch (error) {
+          if (error.response) {
+            // Server responded with non-2xx status
+            console.error('API Error:', error.response.status, error.response.data);
+            throw new Error(`Library service error: ${error.response.status}`);
+          } else {
+            console.error('Network Error:', error.message);
+            throw new Error('Cannot connect to library service');
+          }
+        }
+      }
+  };
 

@@ -10,6 +10,7 @@ import { My_Courses } from './pages/Courses/User_Courses.jsx';
 import { Books } from './pages/Books/Books_main_page.jsx';
 import { Profile } from "./pages/Profile.jsx";
 import { EligibilityCheck } from "./pages/Eligibilty/Eligibility_check.jsx";
+import { InvoicePage } from "./pages/Eligibilty/Invoices.jsx";
 
 function App() {
     const router = createBrowserRouter([
@@ -32,6 +33,8 @@ function App() {
                 {path:'/home/courses/my_courses',element:<My_Courses/>},
                 
                 {path:'/home/books',element:<Books/>},
+                
+                {path:'/home/invoices',element:<InvoicePage/>}
             ],
         },
 

@@ -24,6 +24,7 @@ from helpers import *
 from flask_cors import CORS
 
 app = Flask(__name__)
+app.secret_key = os.environ.get('SECRET_KEY') or 'your-secret-key-here'
 CORS(app,
      resources={r"/*": {"origins": "http://localhost:5173"}},
      supports_credentials=True,
@@ -45,7 +46,7 @@ def after_request(response):
 app.config.update(
     SESSION_COOKIE_SECURE=False,  # True in production
     SESSION_COOKIE_HTTPONLY=True,
-    SESSION_COOKIE_SAMESITE='None',  # Required for cross-origin
+    SESSION_COOKIE_SAMESITE='Lax',  # Required for cross-origin
     SESSION_COOKIE_NAME='library_session',
     SESSION_COOKIE_PATH='/',
     SESSION_COOKIE_DOMAIN=None
@@ -105,43 +106,47 @@ def register():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     """Log user in"""
-    # Forget any user_id
     session.clear()
 
     if request.method == 'POST':
-
         student_id = request.form.get('student_id')
         pin = request.form.get('pin')
+        print(student_id)
+        print(pin)
         if not student_id or not pin:
             return apology('incomplete details', 403)
 
-        # Ensure student_id exists and password is correct
+        # Database check
         rows = db.execute('SELECT * FROM student WHERE id = %s', student_id)
+        print(rows)
         if len(rows) != 1 or not check_password_hash(rows[0]['hash'], pin):
             return apology('invalid details', 403)
 
-        # If this is first time the student has logged in, force them to change the pin
+        # Handle first login
         if pin == constants.DEFAULT_PIN:
-            session['new_user'] = student_id
+            session.permanent = True
+            session['new_user'] = student_id  # Set session before redirect
+            print('going to first login')
             return redirect('/firstlogin')
 
-        if student_id == 'admin':
-            session['admin'] = True
-            return redirect('/admin/books')
-
+        # Regular login
         session['user_id'] = student_id
         return redirect('/')
 
-    else:
-        return render_template('user/login.html')
-
+    return render_template('user/login.html')
 
 @app.route('/firstlogin', methods=['GET', 'POST'])
 def firstlogin():
     """Update Password"""
+    # Check if user should be here
+    if 'new_user' not in session:
+        flash('Please login first', 'alert-danger')
+        return redirect('/login')
+
     if request.method == 'GET':
         return render_template('user/firstlogin.html', student_id=session['new_user'])
-    else:
+
+    elif request.method == 'POST':
         pin = request.form.get('pin')
         pin_confirmation = request.form.get('confirm-pin')
 
@@ -154,14 +159,24 @@ def firstlogin():
         if pin != pin_confirmation:
             flash(messages.PIN_CONFIRMATION_ERROR, 'alert-danger')
             return redirect('/firstlogin')
-        else:
-            # save new pin to the db and log the student in
-            session['new_user'] = None
-            session['user_id'] = request.form.get('student_id')
-            db.execute('UPDATE student SET hash = %s WHERE id = %s', generate_password_hash(pin), session['user_id'])
-            flash(messages.PIN_UPDATE_SUCCESS, 'alert-success')
-            return redirect('/')
 
+        try:
+            # Update database first
+            db.execute('UPDATE student SET hash = %s WHERE id = %s',
+                       generate_password_hash(pin),
+                       session['new_user'])
+
+            # Clear session properly
+            session.pop('new_user', None)
+            session['user_id'] = session.pop('new_user', None)
+
+            flash(messages.PIN_UPDATE_SUCCESS, 'alert-success')
+            return redirect('/admin/books')
+
+        except Exception as e:
+            current_app.logger.error(f"Password update failed: {str(e)}")
+            flash('Password update failed', 'alert-danger')
+            return redirect('/firstlogin')
 
 @app.route('/logout')
 def logout():
@@ -209,7 +224,6 @@ def transactions():
                                     calculate_days_overdue(row['date_borrowed'], row['date_returned'])])
 
     return render_template('user/transactions.html', transactions=transaction_history, title='My Account')
-
 
 @app.route('/borrow', methods=['GET', 'POST'])
 @login_required

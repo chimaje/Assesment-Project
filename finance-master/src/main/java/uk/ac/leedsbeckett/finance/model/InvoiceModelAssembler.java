@@ -2,11 +2,15 @@ package uk.ac.leedsbeckett.finance.model;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.stereotype.Component;
 import uk.ac.leedsbeckett.finance.controller.InvoiceController;
 import uk.ac.leedsbeckett.finance.exception.InvoiceNotValidException;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public
@@ -39,5 +43,15 @@ class InvoiceModelAssembler implements RepresentationModelAssembler<Invoice, Ent
                 && !invoice.getReference().isEmpty()
                 && invoice.getAmount() != null
                 && invoice.getDueDate() != null;
+    }
+    public CollectionModel<EntityModel<Invoice>> toCollectionModel(List<Invoice> invoices) {
+        List<EntityModel<Invoice>> invoiceModels = invoices.stream()
+                .map(this::toModel)
+                .collect(Collectors.toList());
+
+        return CollectionModel.of(
+                invoiceModels,
+                linkTo(methodOn(InvoiceController.class).getByStudentId(null)).withSelfRel()
+        );
     }
 }

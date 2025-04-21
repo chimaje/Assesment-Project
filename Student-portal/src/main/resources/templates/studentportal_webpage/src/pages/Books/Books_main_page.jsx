@@ -1,7 +1,7 @@
-/* eslint-disable no-unused-vars */
+// /* eslint-disable no-unused-vars */
 export function Books() {
     return (
-        <div className="min-h-screen bg-gray-50 pt-16"> {/* Added pt-16 for header spacing */}
+        <div className="min-h-screen bg-gray-50 pt-10"> {/* Added pt-16 for header spacing */}
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8"> {/* Consistent container */}
                 <div className="text-center mb-10 space-y-2"> {/* Improved spacing */}
                     <h1 className="text-3xl font-bold text-gray-900 tracking-tight">
@@ -20,9 +20,13 @@ export function Books() {
                         </div>
                         
                         <div className="space-y-4"> {/* Vertical spacing */}
-                            <p className="text-gray-600 text-lg leading-relaxed">
+                            {/* <p className="text-gray-600 text-lg leading-relaxed">
                                 You currently have <span className="font-semibold">0 books</span> borrowed.
-                            </p>
+                            </p> */}
+                            <p className="text-sm text-gray-500 italic border-l-4 border-blue-100 pl-3 py-2">
+                            Use your student Id and 000000 to login to the library service
+                            
+                        </p>
                             <p className="text-gray-500 text-base">
                                 Visit the Library Portal to explore and borrow books.
                             </p>
@@ -31,7 +35,7 @@ export function Books() {
                         <a 
                             onClick={() => {
                                 // Open library login in new tab
-                                const loginWindow = window.open(
+                                 window.open(
                                     'http://localhost',
                                     '_blank',
                                 );

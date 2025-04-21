@@ -26,7 +26,8 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Component
-public class InvoiceService {
+public class
+InvoiceService {
 
     private final AccountRepository accountRepository;
     private final InvoiceModelAssembler assembler;
@@ -45,6 +46,16 @@ public class InvoiceService {
         Invoice invoice = invoiceRepository.findById(id)
                 .orElseThrow(() -> new InvoiceNotFoundException(id));
         return assembler.toModel(invoice);
+    }
+    //Method to get invoice by student id
+    public CollectionModel<EntityModel<Invoice>> getInvoicesByStudentid(String studentId) {
+        List<Invoice> invoices = invoiceRepository.findByAccount_StudentId(studentId);
+
+        if (invoices.isEmpty()) {
+            throw new InvoiceNotFoundException(studentId);
+        }
+
+        return assembler.toCollectionModel(invoices);
     }
 
     // Method to get all invoices
