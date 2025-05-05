@@ -168,12 +168,6 @@ public class IntegrationService {
         String invoiceUrl = "http://localhost:8081/api/invoices/actions/course_fee";
         InvoiceRequest invoiceRequest = new InvoiceRequest(studentId, amount);
         HttpEntity<InvoiceRequest> requestEntity = new HttpEntity<>(invoiceRequest);
-//        ResponseEntity<InvoiceRequest> response = restTemplate.exchange(
-//                invoiceUrl,
-//                HttpMethod.POST,
-//                requestEntity,
-//                InvoiceRequest.class
-//        );
         ResponseEntity<InvoiceResponse> response=restTemplate.postForEntity(invoiceUrl, requestEntity,InvoiceResponse.class);
             System.out.println(response.getBody());
         // 5. Handle response

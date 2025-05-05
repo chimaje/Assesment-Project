@@ -31,23 +31,12 @@ public class StudentController{
         this.userService = userService;
     }
 
-  private final RestTemplate restTemplate = new RestTemplate();
-//    private final Map<String, Student> studentDatabase = new HashMap<>();
 
     @PostMapping("/register")
     public ResponseEntity<Student> createStudent(@RequestBody Student student) {
         Student createdStudent = studentService.createStudent(student);
         integrationService.registerStudent(student);
-//        String libraryUrl = "http://localhost/api/register";
-////        String financeUrl = "http://localhost:8081/accounts/register";
-//       IntegrationService.LibraryAccountRequest request = new IntegrationService.LibraryAccountRequest(student.getExternalStudentId());
-////       IntegrationService.FinanceAccountRequest request2 = new IntegrationService.FinanceAccountRequest(student.getExternalStudentId());
-//        restTemplate.postForObject(libraryUrl, request, Void.class);
-////        restTemplate.postForObject(financeUrl, request2, Void.class);
         return new ResponseEntity<>(createdStudent, HttpStatus.CREATED);
-
-
-
 
     }
 
